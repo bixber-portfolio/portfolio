@@ -1,0 +1,112 @@
+@startuml registration_lesson
+' title "<size:35>Алгоритм записи на абонемент/разовое занятие</size>"
+
+skinparam Shadowing true
+
+skinparam Activity {
+    FontSize 20
+    BackgroundColor #FFEC81
+    BorderColor SaddleBrown
+    BorderThickness 2
+}
+
+skinparam partition {
+    FontSize 25
+    BackgroundColor #FFFCAF
+    FontStyle bold
+}
+
+skinparam rectangle {
+    FontSize 30
+    BackgroundColor Orange
+    FontStyle bold
+}
+
+skinparam arrow {
+    FontSize 17
+    Thickness 2
+}
+
+skinparam note {
+    BackgroundColor #E8CDA2
+    FontSize 17
+    FontStyle italic
+}
+
+start
+rectangle "Информационная система" <<Rect>> {
+
+    partition "Платежная часть" <<Part>> {
+        if (На балансе виртуального счета пользователя > 1 занятия) then (да)
+        else (нет)
+            repeat
+                :Пополнить виртуальный счет;
+                
+                backward :Сменить тарифный план;
+                note right
+                    Переходя на новый
+                    тарифный план,
+                    студент доплачивает
+                    его стоимость,
+                    относительно своего
+                    текущего тарифа
+                end note
+                :Просмотреть занятия по тарифному плану;
+            repeat while (Доступные тарифные\nзанятия устраивают?) is (нет) not (да)
+        endif
+        note left
+            Тарифный план
+            пользователя
+            определяется
+            выбранным им
+            в профиле
+        end note
+    }
+
+    partition "Сервисная часть" <<Part>> {
+        repeat
+            :Выбрать доступного преподавателя и время;
+            if (Не устраивает преподаватель) then (да)
+                :Выбрать другого преподавателя;
+                :Заниматься без\nвыбора времени;
+                note left
+                    Время подбирается на
+                    основе доступного для
+                    данного преподавателя,
+                    а также приближенного
+                    к желанному
+                end note
+            elseif (Не устраивает время) then (да)
+                :Выбрать время\nиз предложенного;
+                :Заниматься без\nвыбора преподавателя;
+                note right
+                    Преподаватель
+                    подбирается на основе
+                    доступных для
+                    открытого тарифного
+                    плана студента
+                end note
+            else (нет) 
+            endif
+
+            backward :Выбрать другую\nдату занятия;
+        repeat while (Время и преподаватель устраивают?) is (нет) not (да)
+
+    :Подтвердить запись;
+    }
+}
+    
+package "Telegram Messanger" {
+    :Получить уведомление\nо записи в Telegram;
+    note right
+    Сообщение о запланированном
+    занятии приходит от
+    Telegram-бота, отвечающего за
+    рассылку уведомлений от ИС
+end note
+}
+    
+    
+
+stop
+@enduml

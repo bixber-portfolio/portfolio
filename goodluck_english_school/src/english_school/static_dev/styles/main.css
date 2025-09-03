@@ -1,0 +1,84 @@
+@import url('includes/card-styles.css');
+@import url('includes/list-styles.css');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Finlandica";
+}
+
+header, footer {
+    background-color: #2f4690;
+}
+
+main {
+    background-color: #D1F1FF;
+    min-height: 45rem;
+}
+
+.container {
+    max-width: 1100px;
+}
+
+.container-fluid {
+    margin-bottom: 1rem;
+}
+
+main .container {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.nav-item {
+    font-weight: 500;
+    font-size: larger;
+}
+
+.title {
+    font-weight: 600;
+    font-size: larger;
+    color: #ecfbff;
+}
+
+footer .link-text {
+    color: #d8f6ff;
+}
+
+.small-text {
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+#home-container-bg-top {
+    background-color: #5283ff;
+}
+
+#home-container-bg-bottom {
+    background-color: #686EFF;
+    border-radius: 2rem;
+}
+
+#home-container-bg-bottom .text-intro {
+    font-weight: 500;
+}
+
+.subtext-intro {
+    font-size: large;
+}
+
+form .btn {
+    font-weight: 500;
+    width: 100%;
+}
+
+.background-image.background-image-blur {
+    background-size: cover;
+}
+
+.background-image.background-image-blur .container-fluid {
+    backdrop-filter: blur(10px);
+}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Ошибка подтверждения занятия
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-6 offset-3">
+      <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">
+          Недействительная ссылка
+        </h4>
+        <p>
+          Недействительная ссылка для подтверждения занятия. Возможно, срок действия ссылки истек или она была использована...
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

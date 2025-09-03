@@ -1,0 +1,34 @@
+{% with request.resolver_match.view_name as current_view_name %}
+
+{% with lesson.teacher.teacher_profile as teacher_profile %}
+{% with lesson.student.student_profile as student_profile %}
+
+<div class="d-flex flex-row card-article rounded-3 bg-info bg-opacity-25 py-1 mb-2">
+  <div class="text-container px-2 text-time text-muted">
+    <p class="article-text my-0 py-0">
+      {% if current_view_name == 'profiles:profile_detail' %}{{ lesson.finished_to }}{% else %}{{ lesson.started_from }}{% endif %}
+    </p>
+  </div>
+  <div class="ms-2 mb-0 pb-0">
+    {% if role == 'teacher' %}
+      {% include 'includes/profiles/photo_image.html' with size_code="small" obj=student_profile %}
+    {% else %}
+      {% include 'includes/profiles/photo_image.html' with size_code="small" obj=teacher_profile %}
+    {% endif %}
+  </div>
+  <div class="text-container text-teacher-inits px-2">
+    <p class="article-text my-0 py-0">
+      {% if role == 'teacher' %}{{ lesson.student.get_first_last_name }}{% else %}{{ lesson.teacher.get_first_last_name }}{% endif %}
+    </p>
+  </div>
+  <div class="d-flex flex-row align-items-center text-container px-2 ms-auto">
+    <p class="article-text text-rate my-0 py-0">ТАРИФ:</p>
+    <div class="ms-2 px-2 py-0 rounded-pill" style="background-image:url({{ lesson.rate.theme_image.url }}); background-size:cover;">
+      <p class="card-text text-rate fw-bold" style="font-size:0.8rem">{{ lesson.rate.title }}</p>
+    </div>
+  </div>
+</div>
+
+{% endwith %}
+{% endwith %}
+{% endwith %}

@@ -1,0 +1,34 @@
+{% with request.resolver_match.view_name as current_view_name %}
+<div class="row history-lesson mt-4">
+  <div class="col">
+    <div class="card card-profile card-profile-other rounded-4 shadow-sm">
+    <h5 class="card-header text text-center fw-bold rounded-top-4">{{ card_title }}</h5>
+    {% if lessons.count > 0 %}
+      <div class="card-body h-100">
+        <div class="d-flex flex-column w-100 h-100">
+          <div class="history-lines d-flex flex-column" style="min-height:9rem;">
+          {% for lesson in lessons|slice:":3" %}
+            {% include 'includes/lessons/history_lesson_line.html' with lesson=lesson %}
+          {% endfor %}
+          </div>
+    {% endif %}
+    {% if lessons.count > 3 %}
+          <div class="d-flex mb-auto my-0 py-0 justify-content-center">
+            {% if current_view_name == 'lessons:schedule_lesson' %}
+              <a class="card-link text text-info" href="{% url 'lessons:lesson_list' 'planned' %}">Смотреть полную историю...</a>
+            {% else %}
+              <a class="card-link text text-info" href="{% url 'lessons:lesson_list' 'finished' %}">Смотреть полную историю...</a>
+            {% endif %}
+          </div>
+        </div>
+    {% endif %}
+    {% if not lessons %}
+        <div class="d-flex text text-info text-center mb-auto justify-content-center mt-5 py-0">
+          <p class >Здесь пока ничего нет...</p>
+        </div>
+    {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endwith %}

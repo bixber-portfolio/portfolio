@@ -1,0 +1,132 @@
+@startuml lesson_session
+' title "Состояния сессии занятия"
+top to bottom direction
+
+skinparam Shadowing<< General >> false
+skinparam Shadowing true
+
+skinparam title {
+    FontSize 55
+}
+
+skinparam state {
+    FontSize 28
+    FontSize<< General >> 33
+    FontSize<< Nested >> 29
+    FontStyle<< General >> bold
+    FontStyle<< Nested >> bold
+    StereotypeFontStyle bold
+    BackgroundColor LightYellow
+    BackgroundColor<< General >> Orange
+    BackgroundColor<< Nested >> SandyBrown
+    BorderColor SaddleBrown
+    BorderColor<< General >> Orange
+    BorderColor<< Nested >> SandyBrown
+    BorderThickness 2
+    BorderThickness<< General >> 6
+    BorderThickness<< Nested >> 4
+}
+
+skinparam arrow {
+    FontSize 24
+    Thickness 3
+}
+
+[*] -down-> WorkingSystem: <size:30>Пользователь решил учиться</size>
+
+state "ИС в рабочем состоянии" as WorkingSystem<<General>> {
+' Положительные состояния:
+    state "<b>Выбран тариф</b>" as ChosenFare: Студент выбирает тариф\nиз доступных ему в соответствии\nс оплаченным пакетом
+    state "<b>Выбран преподаватель</b>" as ChosenTeacher: Студент выбирает преподавателя\nиз доступных ему на текущий момент
+    state "<b>Выбрано время</b>" as ChosenStartTime: Студент выбирает время\nиз доступного для выбранного\nпреподавателя
+    state "<b>Запланировано</b>" as Planned: Занятие запланировано и все\nучастники получили уведомление
+    
+    state "<b>Списано</b>" as Debited: Занятие списано с виртуального счета студента
+
+    state "<b>Рекомендации</b>" as Recommendations<< Nested >> {
+' Положительные состояния:
+        state "<b>Выход с</b>\n<b>занятием</b>" as exit_with_lesson <<exitPoint>>
+
+        state "<b>Предложено занятие</b>" as OfferedLesson: Предложено следующее занятие
+        state "<b>Реализовано</b>" as OfferImplemented: Студент принял предложение\nо будущем занятии
+        
+        [*] -[#Green]-> OfferedLesson: [Студент откликнулся на\nвсплывающее окно]
+        [*] -[#Red]-> exit_without_lesson: [Студент отклонил\nвсплывающее окно]
+        OfferedLesson -[#Green]-> OfferImplemented: Студент согласился с\nпредложенным занятием
+        OfferImplemented -[#Green]-> exit_with_lesson
+        exit_with_lesson -[#Green]-> Planned
+
+' Отрицательные состояния:
+        state "<b>Выход без</b>\n<b>занятия</b>" as exit_without_lesson <<exitPoint>>
+        state "<b>Не реализовано</b>" as OfferNotImplemented #pink;line:red;line.bold;text:red : Студент не принял\nпредложение по будущем\nзанятии
+        OfferedLesson -[#Red]-> OfferNotImplemented: Студент не согласился с\nпредложенным занятием
+        OfferNotImplemented -[#Red]-> exit_without_lesson
+    }
+
+    [*] -[#Green]-> ChosenFare: Студент выбрал\nтарифный план
+    ChosenFare -[#Green]-> ChosenTeacher: Студент выбрал\nжелаемого преподавателя
+    ChosenTeacher -[#Green]-> ChosenStartTime: Студент выбрал удобное время
+    ChosenStartTime -[#Green]-> Planned: Студент согласился с\nправилами проведения и\nзапланировал занятие
+
+' Отрицательные состояния:
+    state "<b>Перенесено</b>" as Rescheduled #pink;line:red;line.bold;text:red : Занятие перенесено\nпо некоторым причинам
+    state "<b>Отменено</b>" as Cancelled #pink;line:red;line.bold;text:red : Занятие отменено\nпо некоторым причинам
+    state "<b>Не завершено</b>" as NotCompleted #pink;line:red;line.bold;text:red : Занятие не дошло до\nлогического завершения
+
+    state rescheduled_join <<join>>
+    state cancelled_join <<join>>
+    state unfinished_join <<join>>
+    state endstate_join <<join>>
+
+    ChosenFare -[#red]-> cancelled_join
+    ChosenTeacher -[#red]-> cancelled_join
+    ChosenStartTime -[#red]-> cancelled_join
+    Planned -[#red]-> cancelled_join: [До начала занятия осталось\nне менее 24 (двадцать четыре)\nчаса]
+    
+    Planned -[#red]-> rescheduled_join: [До начала занятия\nне менее 2 (двух) часов]
+    
+    cancelled_join -[#red]-> Cancelled
+    rescheduled_join -[#red]-> Rescheduled
+    unfinished_join -[#red]-> NotCompleted
+
+    Cancelled -[#red]-> endstate_join
+    NotCompleted -[#red]-> endstate_join
+    Rescheduled -[#Orange]-> Planned: Студент договорился с\nпреподавателем об удобном\nдля обоих времени
+}
+
+endstate_join -[#Red]-> [*]
+
+state "Платформа для занятий\nв рабочем состоянии" as LessonPlatform<< General >> {
+    state "<b>Инициировано</b>" as Initiated: Конференция (сессия)\nсоздана преподавателем\nна соответствующей\nплатформе
+    state "<b>Реализуется</b>" as BeingImplemented: Студент и преподаватель\nна связи в рамках\nодной сессии
+    state "<b>Реализовано</b>" as Implemented: Студент и преподаватель\nзавершили занятие и\nпокинули конференцию
+    state fork_state <<fork>>
+    state join_state <<join>>
+    state "<b>Вход по ссылке-</b>\n<b>пришлашению</b>" as entryInviteLink <<entryPoint>>
+    state "<b>Выход с платформы</b>" as exitFromPlatform <<exitPoint>>
+
+    Planned -[#Green]-> entryInviteLink: Студент \nперешел\nпо ссылке-\nприглашению
+    entryInviteLink -[#Green]-> BeingImplemented
+    [*] --> Initiated: Преподаватель\nсоздал\nконференцию и\nотправил приглашение\nстуденту
+    Initiated -[#Green]-> BeingImplemented: Студент присоединился к\nконференции и преподаватель\nначал вести занятие
+    BeingImplemented -[#Green]-> fork_state
+    fork_state -[#Green]-> Implemented: ["Прошёл 1 (один) час времени\nс начала занятия"\nAND "Студент не имеет вопросов\nк преподавателю"]
+    fork_state -[#Green]-> Debited: ["Прошло 20 (двадцать) минут\nс момента начала занятия"\nAND "Занятие не было перенесено"\nAND "Преподаватель был на\nконференции (сессии)"]
+    Implemented -[#Green]-> join_state
+    Debited -[#Green]-> join_state
+    join_state -[#Green]-> exitFromPlatform: Студент вышел с платформы
+    exitFromPlatform -[#Green]-> Recommendations: Студент вернулся в ИС
+
+    Initiated -[#red]-> cancelled_join
+    BeingImplemented -[#red]-> cancelled_join: [С начала\nзанятия\nпрошло не\nболее 20\n(двадцати)\nминут]
+
+    Initiated -[#red]-> rescheduled_join
+    BeingImplemented -[#red]-> rescheduled_join: [С начала\nзанятия\nпрошло не\nболее 20\n(двадцати)\nминут]
+
+    BeingImplemented -[#red]-> unfinished_join: [Преподаватель \nили студент не\nбыли на связи\nболее 30%\n(тридцати\nпроцентов)\nзанятия]
+}
+
+exitFromPlatform -[#Green]-> [*]
+exit_without_lesson -[#Green]-> [*]
+
+@enduml

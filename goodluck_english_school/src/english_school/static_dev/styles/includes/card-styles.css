@@ -1,0 +1,206 @@
+.outer, .outer .card-header {
+    border: none;
+    color: white
+}
+
+.card-services.outer .card {
+    max-width: 18rem;
+}
+
+.inner {
+    border-width: 0.1rem;
+    border-radius: 0;
+}
+
+.card-news .inner img, .card-contacts img {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+#card-student-frequent-choice .card-body.bg-opacity {
+    background-color:rgb(255, 72, 237, .6);
+}
+
+#card-student-frequent-choice .empty-place, #card-student-frequent-choice .card-header {
+    background-color: #ff48ed;
+}
+
+#card-student-frequent-choice .inner {
+    border-color: #ff48ed;
+}
+
+#card-adult-frequent-choice .inner, .by-type-subscription .inner {
+    border-color: #FF9900;
+}
+
+#card-adult-frequent-choice .empty-place, #card-adult-frequent-choice .card-header, .by-type-subscription .card-header {
+    background-color: #FF9900;
+}
+
+#card-adult-frequent-choice .card-body.bg-opacity, .by-type-subscription .card-body.bg-opacity {
+    background-color:rgba(255, 153, 0, .6);
+}
+
+#card-last-recent-news .inner {
+    border-color: #00C1FE;
+}
+
+#card-last-recent-news .empty-place, #card-last-recent-news .card-header {
+    background-color: #00C1FE;
+}
+
+.by-type-common .card-body.bg-opacity {
+    background-color:rgba(150, 150, 150, 0.6);
+}
+
+.by-type-common .card-header {
+    background-color:rgb(150, 150, 150);
+}
+
+.card .empty-place-left, .card-placeholder-left .inner {
+    border-bottom-left-radius: 0.5rem;
+    
+}
+
+.card .empty-place-right, .card-placeholder-right .inner {
+    border-bottom-right-radius: 0.5rem;
+}
+
+.card .empty-place-bottom, .card-placeholder-bottom .inner {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.card-body.w-100 {
+    backdrop-filter: blur(0.2rem);
+}
+
+.card-info-page {
+    width: 40rem;
+}
+
+.card-profile {
+    min-height: 205px;
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+.card-profile .card-title {
+    font-size: 1.75rem;
+}
+
+.card-profile .card-text, #card-profile-main-button {
+    font-weight: 400;
+    font-size: 1.25rem;
+}
+
+.card.inner .card-title {
+    font-size: 1rem;
+}
+
+.card-profile .card-link {
+    font-weight: 400;
+    font-size: 1rem;
+    color: aqua;
+}
+
+.image-circle {
+    object-fit: cover;
+}
+
+.card-profile .image-big {
+    width: 170px;
+    height: 170px;
+}
+
+.card-profile .image-small {
+    width: 25px;
+    height: 25px;
+}
+
+.card-profile-rate .card-title {
+    font-weight: 600;
+    font-size: 1.75rem;
+}
+
+.card-profile-main .card-body .article-title, .card-profile-main .article-text {
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin-bottom: 0;
+}
+
+.text-rate {
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.card-profile-other .text-rate {
+    font-size: 1.25rem;
+}
+
+.card-profile-rate .text-rate {
+    font-size: 3rem;
+}
+
+.card-profile .text-edu-level {
+    font-size: medium;
+}
+
+.card.card-services .text-rate {
+    font-size: small;
+}
+
+.card-profile-rate {
+    background-size: cover;
+    background-position: center;
+}
+
+.card-profile-rate .card-link {
+    font-weight: 400;
+    font-size: 1rem;
+    color:lightgray;
+}
+
+.card-profile-main {
+    min-height: auto;
+    max-height: none;
+}
+
+.card-profile-main .card-body .article-title, .card .text-service-title {
+    font-weight: 600;
+}
+
+#username {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+#bio {
+    font-family: "Finlandica Italic";
+    font-size: large;
+    color: dimgrey;
+}
+
+.text-time {
+    font-family: "Finlandica Italic";
+    font-weight: 400;
+}
+
+.card-profile-other .article-text {
+    font-size: large;
+}
+
+.card-contacts .card-article, .card-info .card-header {
+    font-weight: 600;
+    font-size: large;
+}
+
+.card-contacts .article-text {
+    font-weight: 400;
+}
+
+.card-news .card-placeholder {
+    height: 135px;
+}

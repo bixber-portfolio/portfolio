@@ -1,0 +1,111 @@
+@startuml subscribe_notifications
+autonumber
+
+' title "Последовательность процесса подписки на рассылку"
+
+skinparam title {
+    FontSize 40
+}
+
+skinparam arrow {
+    FontSize 24
+    Thickness 3
+}
+
+skinparam actor {
+    FontSize 28
+    FontStyle bold
+    BackgroundColor Orange
+    BorderColor SaddleBrown
+    BorderThickness 2
+}
+
+skinparam participant {
+    FontSize 28
+    FontStyle bold
+    BackgroundColor SkyBlue
+    BorderColor Blue
+    BorderThickness 2
+}
+
+skinparam database {
+    FontSize 28
+    FontStyle bold
+    BackgroundColor SkyBlue
+    BorderColor Blue
+    BorderThickness 2
+}
+
+skinparam entity {
+    FontSize 28
+    FontStyle bold
+    BackgroundColor SkyBlue
+    BorderColor Blue
+    BorderThickness 2
+}
+
+skinparam note {
+    FontSize 20
+    FontColor Grey
+    BackgroundColor LightYellow
+    BorderColor SaddleBrown
+    BorderThickness 2
+}
+
+
+actor "Пользователь" as User
+
+box <size:30>Информационная система</size> #LightBlue
+participant "Страница\nзаполнения формы" as EmailForm
+entity "Кнопка\nподтверждения" as AgreeButton
+participant "Веб-приложение" as WebApp
+database "База данных" as DB
+participant "Сервис\nотправки\nэлектронных\nуведомлений" as EmailService
+end box
+
+User -> EmailForm++: Заполнить форму
+User -> AgreeButton++: Нажать на кнопку
+note bottom: Согласие с\nполитикой \nобработки данных,\nПользовательским\nсоглашением
+
+AgreeButton --> EmailForm--: Отправить тригер
+destroy AgreeButton
+EmailForm -> EmailForm: Проверить email на валидность
+|||
+EmailForm -> WebApp++: Отправить валидные данные
+
+alt <size:20>Клиент уже есть в списке рассылки</size>
+WebApp -> DB++: Создать SQL-запрос
+DB -> DB: Обработать SQL запрос
+note across: <font color=red>**ConstraintFailed Error**</font>
+DB --> WebApp++: Вернуть результат запроса
+WebApp --> EmailForm--: Передать ответ о дубликате
+note right: [Если в БД обнаружена\nтакая же запись]
+EmailForm --> User: Вывод сообщения об ошибке
+note left: «Вы уже\nподписаны\nнарассылку\nуведомлений»
+
+else <size:20>Клиента нет в списке рассылки</size>
+WebApp -> DB++: Создать SQL-запрос
+DB -> DB: Обработать SQL запрос
+note across: <font color=green>**POST-запрос выполнен**</font>
+
+par <size:20>Параллельные запросы-ответы</size>
+DB --> WebApp--: Вернуть ответ о\nдобавлении объекта
+note left: [Если в БД не обнаружена\nтакая же запись]
+|||
+WebApp --/ EmailService++: Получить обновление вебхуком
+end
+
+WebApp --> EmailForm--: Передать ответ о подписке
+deactivate WebApp
+
+par
+EmailForm --> User: Предложить зарегистрироваться
+EmailForm --> User--: Вывести сообщение\nоб успешной подписке
+note left: «Вы успешно\nподписались\nна рассылку\nуведомлений»
+end
+
+... <size:25>**1-3 минуты спустя...**</size> ...
+EmailService -> User--: Отправить приветственное сообщение на почту
+end
+
+@enduml

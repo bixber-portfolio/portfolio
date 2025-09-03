@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="paper paper-rule bg-white rounded-3 p-3">
+        <div class="rounded-2 h-100 p-3" style="border: 1px dashed rgba(0, 0, 0, .75);">
+          <div class="title title-box">
+            <h2 class="text text-center text-uppercase text-dark m-0">{% block title_doc %}{% endblock title_doc %}</h2>
+            <hr class="hr text-dark">
+          </div>
+          <div class="text text-main text-main-content">
+            {% block text_doc %}{% endblock text_doc %}
+          </div>
+          <hr class="hr text-dark">
+          <div class="text text-note text-note-content">
+            {% block text_note_doc %}{% endblock text_note_doc %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

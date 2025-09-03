@@ -1,0 +1,33 @@
+{% load django_bootstrap5 %}
+
+<form class="form mt-{{ with_margin_top }}" method="post">
+  {% csrf_token %}
+
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+      {% for error in form.non_field_errors %}
+        {{ error }}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% for field in form %}
+    {% if field.errors %}
+      <div class="invalid-feedback">
+        {% for error in field.errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if field.name == 'consent' %}
+    <div class="mb-3">
+      {% include 'includes/form_fields/consent.html' %}
+    </div>
+    {% else %}
+    <div class="{% if is_high %}{% if not forloop.first %}pt-4{% endif %}{% endif %}">
+      {% bootstrap_field field show_label=False field_class="bg-light" %}
+    </div>
+    {% endif %} 
+  {% endfor %}
+  <button class="btn btn-info" type="submit">{{ button_text }}</button>
+</form>

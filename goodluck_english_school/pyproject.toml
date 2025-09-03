@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "english_school"
+version = "0.3.0"
+description = "Website with an information system for automating the activities of the Goodluck online English school"
+authors = ["Aleksandr Bynkov <bixber.commercial@yandex.ru>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "english_school"}]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Django = "^4.2.11"
+Pillow = "^9.0.0"
+psycopg2 = "^2.9"
+django-bootstrap5 = "^23.3"
+django-ipware = "^6.0.4"
+lxml = "^5.2.1"
+pytest-lazy-fixture = "0.6.3"
+
+[tool.poetry.dev-dependencies]
+python-dotenv = "^1.0.0"
+pytest = "7.1.2"
+django-debug-toolbar = "^4.0.0"
+flake8 = "^7.0.0"
+mypy = "^1.9.0"
+pytest-django = "4.5.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

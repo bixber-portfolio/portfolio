@@ -1,0 +1,7 @@
+{% with request.resolver_match.view_name as current_view_name %}
+  <li class="nav-item">
+    <a class="nav-link text-white btn btn-lg btn-block {% if current_view_name == view_name %}active{% endif %}" href="{% url view_name %}">
+      {{ item_title }}
+    </a>
+  </li>
+{% endwith %}

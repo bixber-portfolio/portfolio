@@ -1,0 +1,10 @@
+{% load static %}
+
+<img class="image image-circle image-{{ size_code }} rounded-circle"
+src="{% if obj.image %}{{ obj.image.url }}{% else %}
+{% if obj.gender_code == "F" %}{% static 'images/profiles/avatars/empty-image-profile-female.png' %}
+{% elif obj.gender_code == "M" %}{% static 'images/profiles/avatars/empty-image-profile-male.png' %}
+{% else %}{% static 'images/profiles/avatars/empty-image-profile-without-gender.png' %}
+{% endif %}
+{% endif %}"
+alt="">

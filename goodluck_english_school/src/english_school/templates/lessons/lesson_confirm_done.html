@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Успешное подтверждение занятия
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-6 offset-3">
+      <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">
+          Занятие успешно подтверждено
+        </h4>
+        <p>
+          Запланированное проведение онлайн-занятия было успешно подтверждено. 
+          Когда время проведения истечет, на почту, указанную вами при регистрации, 
+          поступит ссылка для подтверждения завершения занятия.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

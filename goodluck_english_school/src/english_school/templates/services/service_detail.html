@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ obj.title }}{% endblock title %}
+
+{% block content %}
+<div class="container-fluid background background-image background-image-blur p-0" style="background-image:url({{ obj.image.url }});">
+  <div class="container-fluid embeded"> 
+    <div class="container">
+      {% include 'includes/buttons/back.html' with text="Вернуться к услугам" bootstrap_color_name="secondary" provided_url="services:services_list" %}
+      <div class="row">
+        <div class="col col-md-6 d-flex justify-content-center flex-column">
+          <div class="card d-flex justify-content-start rounded-4 bg-dark bg-opacity-25 shadow-sm border border-2 border-white border-opacity-75">
+            <div class="card-header rounded-top-4 bg-dark bg-opacity-25 border-0 text-white">
+              <h3 class="p-0 m-0">{{ obj.title }}</h3>
+            </div> 
+            <div class="card-body m-0 p-0">
+              <ul class="list-group list-group-flush rounded-bottom-4">
+                <li class="list-group-item d-flex flex-row align-items-center border-0 bg-dark bg-opacity-25">
+                  <h3 class="text-white p-0 m-0 item-rate">
+                    Тариф:
+                  </h3>
+                  <div class="m-2 px-2 py-0 rounded-pill" style="background-image:url({{ obj.rate.theme_image.url }}); background-size:cover;">
+                    <p class="card-text text-rate">{{ obj.rate.title }}</p>
+                  </div>
+                </li>
+                <li class="list-group-item item-description border-0 bg-dark bg-opacity-25 text-white">
+                  {{ obj.description|linebreaks }}
+                </li>
+                {% if obj.preferences.count > 0 %}
+                  <li class="list-group-item border-0 item-appropriate-list-title bg-dark bg-opacity-25 text-white">
+                    <u>Подойдет Вам, если Вы:</u>
+                  </li>
+                  <li class="list-group-item item-appropriate-list border-0 bg-dark bg-opacity-25 text-white">
+                    <ul>
+                      {% for preference in obj.preferences.all %}
+                        <li>{{ preference.text }}</li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <div class="my-5 mb-md-0 bg-secondary rounded-4 p-2 px-3 shadow-sm w-100">
+              <h4 class="p-0 m-0 text-white">
+                Цена: {{ obj.price }} руб
+              </h4>
+            </div>
+          </div>
+        </div>
+        <div class="col col-md-6">
+          <div class="d-flex justify-content-md-end justify-content-center h-100">
+            <div class="d-flex flex-column h-100">
+              <div class="d-flex image service-image mb-5 mb-md-0 justify-content-md-end justify-content-center">
+                <img class="rounded-4 border border-3 border-white border-opacity-25" src="{{ obj.image.url }}" alt="" style="width:22rem;">
+              </div>
+              {% if request.user.is_authenticated and request.user.role == 'student' %}
+                <div class="d-flex button service-add-button h-100 justify-content-center align-items-md-end justify-content-md-end mb-5 mb-md-0">
+                  <form method="post" action="{% url 'orders:create_order' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="service_id" value="{{ obj.id }}">
+                    <button type="submit" class="btn btn-warning shadow-sm">
+                        <h4 class="p-2 m-0 text-white">Оформить заказ</h4>
+                    </button>
+                  </form>
+                </div>
+              {% else %}
+                <div class="d-flex h-100 align-items-end justify-content-center align-items-md-end justify-content-md-end mb-5 mb-md-0">
+                  <p class="text-danger w-50 fw-medium m-0 bg-white p-2 bg-opacity-75 rounded-4 shadow-sm">
+                    Для оформления заказа необходимо <a href="{% url "users:login" %}" class="text-danger">войти в систему под ролью студента</a>
+                  </p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+	{% include 'includes/cards/services_list.html' with card_title="Другие варианты обучения" for_other_page="true" type="common" services=other_random_services %}
+</div>
+{% endblock content %}

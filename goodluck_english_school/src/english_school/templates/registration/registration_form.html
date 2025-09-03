@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %}Регистрация{% endblock title %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-8 offset-2">
+      <div class="card">
+        <div class="card-header text-center fw-medium">
+          Регистрация пользователя
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+              {% if field.errors %}
+                <div class="invalid-feedback">
+                  {% for error in field.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endif %}
+              {% if field.name == 'consent' %}
+              <div class="mb-3">
+                {% include 'includes/form_fields/consent.html' %}
+              </div>
+              {% else %}
+                <div class="{% if is_high %}{% if not forloop.first %}pt-4{% endif %}{% endif %}">
+                  {% bootstrap_field field %}
+                </div>
+              {% endif %}
+              {% endfor %}
+              <button class="btn btn-info" type="submit">Зарегистрироваться</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const roleSelect = document.querySelector('#id_role');
+      const educationLevelField = document.querySelector('div #id_education_level').closest('div');
+      
+      function toggleEducationLevelField() {
+        if (roleSelect.value === 'teacher') {
+          educationLevelField.style.display = 'block';
+        } else {
+          educationLevelField.style.display = 'none';
+        }
+      }
+      
+      toggleEducationLevelField();
+      
+      roleSelect.addEventListener('change', toggleEducationLevelField);
+    });
+  </script>
+{% endblock scripts %}

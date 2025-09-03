@@ -1,0 +1,239 @@
+@startuml classes_diagram
+    ' title <size:60>Диаграмма классов</size>\n\n\n '
+
+    skinparam groupInheritance 3
+    skinparam shadowing true
+
+    skinparam arrow {
+        FontSize 30
+        Color DimGrey
+        Thickness 3
+    }
+
+    skinparam note {
+        FontSize 30
+        BackgroundColor PapayaWhip
+    }
+
+    skinparam package {
+        BackgroundColor<< Cloud >> AliceBlue
+        BackgroundColor Orange
+        StereotypeFontSize 20
+        StereotypeFontStyle italic
+    }
+
+    skinparam class<< Abstract >> {
+        FontSize 35
+        BackgroundColor OrangeRed
+        BorderColor OrangeRed
+        
+        BackgroundColor LightBlue
+        BorderColor Blue
+        BorderThickness 1
+
+        StereotypeFontSize 27
+        StereotypeFontStyle italic
+    }
+
+    skinparam class<< User >> {
+        FontSize 35
+        BackgroundColor GreenYellow
+        BorderColor Green
+        BorderThickness 1
+        StereotypeFontSize 27
+        StereotypeFontStyle italic
+    }
+
+    skinparam class {
+        AttributeIconSize 15
+        FontSize 38
+        BackgroundColor LightYellow
+        IconSize 20
+        AttributeFontSize 28
+        BorderColor Orange
+        BorderThickness 1
+        StereotypeFontSize 40
+        StereotypeFontStyle italic
+    }
+
+    package "<size:45>Информационная система</size>" as InfoSystem << Package >>{
+        interface "<b>Административная панель</b>" as admin_panel {
+            {method} +create_user()
+            {method} +update_user()
+            {method} +delete_user()
+            {method} +create_lesson()
+            {method} +update_lesson()
+            {method} +delete_lesson()
+            {method} +generate_report()
+        }
+        interface "<b>Платежный шлюз</b>" as payment_gateway {
+            {method} +process_payment()
+            {method} +refund_payment()
+            {method} +get_payment_history()
+        }
+        interface "<b>Профиль пользователя<b>" as user_profile {
+            {method} +get_user_info()/
+            {method} +update_user_info()
+            {method} +get_enrolled_lessons()
+        }
+        interface "<b>Рассылка писем</b>" as mailing {
+            {method} +send_welcome_mail()
+            {method} +send_news_letter()
+        }
+    }
+
+    package "<size:45>Внешние ресурсы</size> \n<size:45>обмена информацией</size>" as outside_resourses << Cloud >>{
+        entity "<b>Telegram Bot</b>" as TelegramBot {
+            {field} -token_id: int
+            {field} -username: string
+            {field} -name: string
+            {field} #is_active: true
+        }
+        class "<b>Мессенджеры</b>" as Messangers {
+            {field} -name: string
+        }
+    }
+
+    abstract class "<b>Пользователь</b>" as User << Abstract >> {
+        {field} user_id: int
+        {field} -username: string
+        {field} -email: string
+        {field} -password: string
+        {field} -is_superuser: bool
+        {field} +first_name: string
+        {field} +last_name: string
+        {field} -is_admin: bool
+        {field} -is_teacher: bool
+        {field} -is_student: bool
+        {field} -is_active: bool
+        {field} -date_joined: date
+        {method} #get_id()
+        {method} #get_username()
+        {method} #get_email()
+        {method} #reset_password()
+        {method} #send_mail()
+    }
+
+    class "<b>Преподаватель</b>" as Teacher << User >> {
+        {field} -bio: string
+        {field} -age: small_int
+        {field} -experience: small_int
+        {field} -language_level: string
+        {field} -education_level: string
+        {field} -count_lessons: int
+        {field} -telegram_username: string
+        {method} #set_language_level()
+    }
+
+    enum "<b>Тип услуги</b>" as ServiceTypes {
+        Абонемент
+        Курс
+        Разовое занятие
+    }
+
+    enum "<b>Уровни образования</b>" as EducationLevels {
+        Высшее образование (аспирантура)
+        Высшее образование (магистратура)
+        Высшее образование (бакалавриат)
+        Среднее профессиональное образование
+        Среднее общее образование
+        Основное общее образование
+    }
+
+    class "<b>Студент</b>" as Student << User >> {
+        {field} -bio: string
+        {field} -age: small_int
+        {field} -telegram_username: string
+        {field} -virtual_wallet_id: int
+    }
+
+    class "<b>Администратор</b>" as Admin << User >> {
+        {field} -telegram_username: string
+    }
+
+    class "<b>Виртуальный счет</b>" as virtual_wallet {
+        {field} -wallet_id: int
+        {field} -user_id: int
+        {field} -amount: decimal
+        {field} -is_active: bool
+    }
+
+    class "<b>Письмо</b>" as Letter {
+        {field} -id: int
+        {field} -text: string
+        {field} -sending_datetime: datetime
+        {field} -recipient: int
+    }
+
+    class "<b>Занятие</b>" as Lesson {
+        {field} -id: int
+        {field} -start_at: datetime
+        {field} -created_at: datetime
+        {field} -student_id: int
+        {field} -teacher_id: int
+        {method} +reschedule_lesson()
+        {method} +leave_feedback()
+    }
+
+    class "<b>Услуга</b>" as Service {
+        {field} -id: int
+        {field} -title: string
+        {field} -description: string
+        {field} -cost: decimal
+        {field} -type: string
+    }
+
+    class "<b>Заказ</b>" as Order {
+        {field} -id: int
+        {field} -datetime_created: datetime
+        {field} -user_id: int
+        {field} -is_paid: bool
+        {field} -service_id: small_int
+        {method} +cancel_order()
+    }
+
+    note top of Admin
+        Администатор является главным 
+        среди всех пользователей
+        (имеет права суперпользователя)
+    end note
+
+    Teacher "1" -right-> "*" EducationLevels
+    Service "1" --> "*" ServiceTypes
+
+    virtual_wallet ..|> user_profile
+    Student "1" --> "1" virtual_wallet
+
+    Teacher "1" <-- "1" Lesson
+    Student "1" <-- "1" Lesson
+    Student "0..1" <-- "0..*" Teacher
+    Teacher --* Lesson
+    Student --* Lesson
+
+    Student --> Service
+    Service --> Order
+    Service --o Order
+    Order ..> payment_gateway
+    Order --> payment_gateway
+
+    Student "0..1" <-- "1" Order
+
+    Letter ..|> mailing
+    Letter "0..*" -left- "0..*" User
+    User --> mailing
+
+    Admin --> admin_panel
+
+    Admin ..|> user_profile
+    Teacher .|> user_profile
+    Student ..|> user_profile
+
+    User <|-left- Admin
+    User <|-up- Teacher
+    User <|-down- Student
+
+    Admin --> outside_resourses
+    Teacher --> outside_resourses
+    Student --> outside_resourses
+
+@enduml

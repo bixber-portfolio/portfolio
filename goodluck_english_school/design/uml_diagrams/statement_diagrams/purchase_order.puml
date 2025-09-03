@@ -1,0 +1,55 @@
+@startuml purchase_order
+title "Состояния заказа на покупку разового занятия/абонемента"
+top to bottom direction
+
+skinparam Shadowing<< General >> false
+skinparam Shadowing true
+
+skinparam title {
+    FontSize 25
+}
+
+skinparam state {
+    FontSize 15
+    FontSize<< General >> 20
+    FontStyle<< General >> bold
+    StereotypeFontStyle bold
+    BackgroundColor LightYellow
+    BackgroundColor<< General >> Orange
+    BorderColor SaddleBrown
+    BorderColor<< General >> Orange
+    BorderThickness 1
+    BorderThickness<< General >> 5
+}
+
+[*] -down-> WorkingSystem: <size:20>Пользователь решил</size>\n<size:20>преобрести услугу</size>
+
+state "ИС в рабочем состоянии" as WorkingSystem<<General>> {
+' Положительные состояния:
+    state "<b>Оплачен</b>" as Payment: Пользователь оплатил заказ
+    state "<b>Выбор услуги</b>" as Choice: Пользователь может выбрать одну\nиз вариаций разового занятия
+    state "<b>Новый заказ</b>" as New: Заказ появился в базе данных
+    state "<b>Оформлен</b>" as Creating: Заказ сформирован в системе
+    state "<b>Исполнен</b>" as Processing: Заказ исполнился в системе
+    state "<b>Подготовлен к оплате</b>" as PrepareToPayment: Пользователю дано 30 минут\nдля оплаты заказа
+    
+    [*] -[#Green]-> Choice: Пользователь решил\nприобрести услугу
+    Choice -[#Green]-> PrepareToPayment: Пользователь определился с выбором
+    PrepareToPayment -[#Green]-> Payment: Пользователь выбрал способ\nоплаты и оплатил заказ
+    Payment -[#Green]-> New: Пользователь оплатил заказ
+    New -[#Green]-> Creating: Система начала формировать заказ
+    Creating -[#Green]-> Processing: Система зачислила занятие(я)\nна виртуальный счет пользователя
+    
+' Отрицательные состояния:
+    state "<b>Отменён</b>" as Cancellation #pink;line:red;line.bold;text:red : Заказ аннулирован
+
+    Choice -[#Red]-> Cancellation: Пользователь покинул страницу выбора
+    PrepareToPayment -[#Green]-> Payment: Пользователь оплатил заказ\nс некоторой попытки
+    PrepareToPayment -[#Red]-> Cancellation: ["Прошло более 30 минут с момента \nприглашения к оплате"\nAND ("Пользователь покинул страницу оплаты"\nOR "У пользователя недостаточно средств")]
+    PrepareToPayment -down[#Orange]-> Choice<< StepAgain >>: Пользователь решил\nизменить заказ
+    }
+
+Processing -[#Green]-> [*]
+Cancellation -[#Red]-> [*]
+
+@enduml

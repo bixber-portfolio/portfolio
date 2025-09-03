@@ -1,0 +1,18 @@
+<div class="row my-5">
+  <div class="col">
+    <div class="card outer card-news card-frequent-choice p-2 rounded-4 shadow-sm" id="card-last-recent-news">
+      <div class="card-header text text-center rounded-top-3">
+        <p class="mb-0 card-title">{{ card_title }}</p>
+      </div>
+      <div class="card-body d-flex flex-column flex-md-row justify-content-between mt-2 p-0">
+        {% for news in last_resent_news|slice:":3" %}
+          <div class="col card-placeholder my-md-0 
+          {% if forloop.first %}card-placeholder-left{% endif %}{% if forloop.last %}card-placeholder-right{% endif %}
+          {% if not forloop.last %}me-md-2 mb-md-0 mb-2{% endif %}">
+            {% include 'includes/cards/nested/news_card.html' %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

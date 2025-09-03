@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Контактная информация{% endblock title %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="card card-contacts rounded-4 shadow-sm">
+        <div class="card-header text text-center rounded-top-4">
+          <h5 class="mb-0 card-title">Контактная информация</h5>
+        </div>
+        <div class="card-body d-flex flex-column pt-2">
+          {% include 'includes/pages/contacts/contact_line.html' with article_title="Адрес электронной почты:" article_text="goodluck-eng@yandex.ru" %}
+          {% include 'includes/pages/contacts/contact_line.html' with article_title="Юридический адрес:" article_text="354000, Краснодарский край, город Сочи, Дагомысская ул., д.19" %}
+          {% include 'includes/pages/contacts/contact_line.html' with article_title="ОГРН:" article_text="1032311680983" %}
+          {% include 'includes/pages/contacts/contact_line.html' with article_title="ИНН:" article_text="2320112081" %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row my-4">
+    <div class="col-12 col-md-6">
+      <div class="card card-contacts rounded-4 shadow-sm h-100">
+        <div class="card-header text text-center rounded-top-4">
+          <h5 class="mb-0 card-title">Социальные сети</h5>
+        </div>
+        <div class="card-body d-flex flex-column pt-2">
+          {% include 'includes/pages/contacts/contact_link_line.html' with link_title="Группа ВКонтакте" link_url='https://vk.com/club218773090' link_svg_path="/static_dev/icons/social_sites/vk.svg" %}
+          {% include 'includes/pages/contacts/contact_link_line.html' with link_title="Канал Telegram" link_url="https://t.me/natalia_bolkh" link_svg_path="/static_dev/icons/social_sites/telegram.svg" %}
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 mt-4 mt-md-0">
+      <div class="card card-contacts rounded-4 shadow-sm">
+        <div class="card-header text text-center rounded-top-4">
+          <h5 class="mb-0 card-title">Основные контакты</h5>
+        </div>
+        <div class="card-body d-flex flex-column pt-2">
+          {% include 'includes/pages/contacts/contact_person_line.html' with person_role="Администратор" person_photo_path="/static_dev/images/pages/contacts/admin_photo.png" person_initials="Наталья Болховитина" person_address="natashenka.bolkh@bk.ru" %}
+          {% include 'includes/pages/contacts/contact_person_line.html' with person_role="Разработчик" person_photo_path="/static_dev/images/pages/contacts/developer_photo.png" person_initials="Александр Быньков" person_address="bixber.official@gmail.com" %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="card card-contacts rounded-4 shadow-sm">
+        <div class="card-header text text-center rounded-top-4">
+          <h5 class="mb-0 card-title">Дополнительная информация</h5>
+        </div>
+        <div class="card-body d-flex flex-column pt-2">
+          Связаться с контактными лицами, указанными на текущей странице сайта, можно в период пн-пт с 8:00 - 22:00 по МСК и только по адресу электронной почты.
+          При обращении* необходимо сформулировать Ваш вопрос в письменной форме и указать фамилию, имя адресата в теме письма.
+          <br><br><strong>*Среднее время обработки запроса: от 1 часа до суток.</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

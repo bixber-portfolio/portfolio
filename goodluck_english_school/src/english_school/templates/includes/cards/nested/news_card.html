@@ -1,0 +1,16 @@
+{% load static %}
+
+<a href="{% url 'news:news_detail' 1 %}" class="text-decoration-none">
+  <div class="card inner py-3 px-2 bg-info bg-opacity-25 d-flex flex-row align-items-center" style="min-height:135px">
+    {% if news.image %}
+      <div>
+        <img src="{{ news.image.url }}" alt="" class="rounded-3">
+      </div>
+    {% endif %}
+    <div class="card-body p-0 ps-3">
+      <p class="card-text text-decoration-none">
+        {{news.title|truncatechars:80}}
+      </p>
+    </div>
+  </div>
+</a>

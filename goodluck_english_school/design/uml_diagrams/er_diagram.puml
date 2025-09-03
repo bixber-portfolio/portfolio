@@ -1,0 +1,261 @@
+@startuml entity_relationship_diagram
+title <size:25>Диаграмма отношения сущностей</size>\n<size:25>базы данных PostgreSQL</size>
+
+skinparam linetype ortho
+
+left to right direction
+
+
+entity "<b>Новость</b>" as news {
+    *<color:red>id : serial(1, 1) <<PK>></color>
+    *title : varchar(500) UNIQUE
+    *text : text NULL UNIQUE
+    *image: varchar(200) NULL
+    *created_at : timestamptz
+    *updated_at : timestamptz NULL
+    *<color:orange>author : integer <<FK>></color>
+    --
+    <color:grey>UNIQUE CONSTRAINT normal_text (title, text)</color>
+}
+
+entity "<b>Пользователь</b>" as user {
+    *<color:red>id : serial(1, 1) <<PK>></color>
+    *username : varchar(30) UNIQUE
+    *email : varchar(256) UNIQUE
+    *phone_number : varchar(15) NULL UNIQUE
+    *password : varchar(150)
+    *last_ip_address: inet
+    *<color:orange>role : varchar(30) <<FK>></color>
+    *first_name : varchar(100)
+    *last_name : varchar(150) NULL
+    *patronymic : varchar (100) NULL
+    *is_news_sub: boolean
+    *is_superuser: boolean
+    *is_staff : boolean
+    *is_active : boolean
+    *date_joined : timestamptz
+    --
+}
+
+enum "<b>Пол</b>" as gender <<Collection>> {
+    *<color:red>code : char(1) <<PK>></color>
+    *title : varchar(30) UNIQUE
+    --
+}
+
+enum "<b>Роль</b>" as role <<Collection>> {
+    *<color:red>slug : varchar(30) <<PK>></color>
+    *title : varchar(60) UNIQUE
+    --
+}
+
+entity "<b>Профиль студента</b>" as student_profile {
+    *<color:red>id : serial(1, 1) <<PK>></color>
+    *<color:orange>user: integer <<FK>></color>
+    *gender_code : enum(Пол)
+    *<color:orange>rates : varchar(30) NULL <<FK>></color>
+    *bio : text NULL
+    *birthday_date: date
+    *image: varchar(200) NULL
+    *telegram_username: varchar(32) NULL UNIQUE
+    --
+    <color:grey>CONSTRAINT is_adult CHECK (age >= 16)</color>
+}
+
+entity "<b>Тариф профиля студента</b>" as student_profile_rates {
+    *<color:red>id : serial(1, 1) <<PK>></color>
+    *<color:orange>student_profile : integer <<FK>></color>
+    *<color:orange>rate: integer <<FK>></color>
+    *assigned_at : timestamptz
+    --
+    <color:grey>UNIQUE CONSTRAINT is_not_duplicate (student_profile, rate)</color>
+}
+
+entity "<b>Кошелек</b>" as wallet {
+    *<color:red>id : serial(1, 1) <<PK>></color>
+    *<color:orange>user : integer <<FK>></color>
+    *balance : numeric(10, 2)
+    *<color:orange>status_code : varchar(30) <<FK>></color>
+    --
+}
+
+enum "<b>Тип транзакции</b>" as transaction_type <<Collection>> {
+    *<color:red>slug : varchar(30) <<PK>></color>
+    *title : varchar(60) UNIQUE
+    --
+}
+
+entity "<b>Транзакции кошелька</b>" as wallet_transaction {
+    *<color:red>id : serial(1, 1) <<PK>></color>
+    *<color:orange>wallet : integer <<FK>></color>
+    *amount : numeric(10, 2)
+    *type : enum(Тип транзакции)
+    --
+}
+
+entity "<b>Статус кошелька</b>" as wallet_statuses {
+    *<color:red>code : varchar(30) <<PK>></color>
+    *title : varchar(60) UNIQUE
+    *description : text NULL UNIQUE
+    --
+}
+
+entity "<b>Тариф</b>" as rate {
+    *<color:red>code : varchar(30) <<PK>></color>
+    *title : varchar(60) UNIQUE
+    *description : text NULL UNIQUE
+    *lesson_cost : numeric(10, 2)
+    *theme_image : varchar(200) UNIQUE
+    --
+    <color:grey>UNIQUE CONSTRAINT normal_description (title, description)</color>
+}
+
+entity "<b>Профиль преподавателя</b>" as teacher_profile {
+    *<color:red>id : serial(1, 1) <<PK>></color>
+    *<color:orange>user: integer <<FK>></color>
+    *gender_code : enum(Пол)
+    *<color:orange>rates : varchar(30) <<FK>></color> 
+    *bio : text NULL
+    *birthday_date: date
+    *image: varchar(200) NULL
+    *telegram_username: varchar(32) NULL UNIQUE
+    *education_level : enum(Уровень образования)
+    --
+    <color:grey>CONSTRAINT is_adult CHECK (age >= 16)</color>
+}
+
+entity "<b>Тариф профиля преподавателя</b>" as teacher_profile_rates {
+    *<color:red>id : serial(1, 1) <<PK>></color>
+    *<color:orange>teacher_profile : integer <<FK>></color>
+    *<color:orange>rate: integer <<FK>></color>
+    *assigned_at : timestamptz
+    --
+    <color:grey>UNIQUE CONSTRAINT is_not_duplicate (teacher_profile, rate)</color>
+}
+
+enum "<b>Уровень</b>\n<b>образования</b>" as education_level <<Collection>> {
+    *<color:red>code : varchar(30) <<PK>></color>
+    *title : varchar(90) UNIQUE
+    --
+}
+
+entity "<b>Занятие</b>" as lesson {
+    *<color:red>id : serial(1, 1) <<PK>></color>
+    *created_at : timestamptz
+    *started_from : timestamptz
+    *finished_to : timestamptz
+    *<color:orange>status_code : varchar(30) <<FK>></color>
+    *<color:orange>teacher : integer <<FK>></color>
+    *<color:orange>student : integer <<FK>></color>
+    *<color:orange>rate : varchar(30) <<FK>></color>
+    --
+    <color:grey>CONSTRAINT is_not_overlap CHECK (started_from != finished_to)</color>
+}
+
+entity "<b>Статус занятия</b>" as lesson_statuses {
+    *<color:red>code : varchar(30) <<PK>></color>
+    *title : varchar(60) UNIQUE
+    *description : text NULL UNIQUE
+    --
+}
+
+entity "<b>Заказ</b>" as order {
+    *<color:red>id : serial(1, 1) <<PK>></color>
+    *created_at : timestamptz
+    *<color:orange>user: integer <<FK>></color>
+    *<color:orange>status_code : varchar(30) <<FK>></color>
+    --
+}
+
+entity "<b>Статус заказа</b>" as order_statuses {
+    *<color:red>code : varchar(30) <<PK>></color>
+    *title : varchar(60) UNIQUE
+    *description : text UNIQUE
+    --
+}
+
+entity "<b>Предпочтение выбора</b>" as service_choice {
+    *<color:red>id : serial(1, 1) <<PK>></color>
+    text : text UNIQUE
+    --
+}
+
+entity "<b>Предпочтение выбора услуги</b>" as service_choice_preferences {
+    *<color:red>id : serial(1, 1) <<PK>></color>
+    *<color:orange>service : integer <<FK>></color>
+    *<color:orange>preference: integer <<FK>></color>
+    --
+}
+
+entity "<b>Услуга</b>" as service {
+    *<color:red>id: varchar(6) custom<<PK>></color>
+    *title : varchar(200) UNIQUE
+    *description : text NULL UNIQUE
+    *<color:orange>preferences : varchar(256) NULL <<FK>></color>
+    *image: varchar(200)
+    *price : numeric(10, 2)
+    *<color:orange>type : varchar(30) <<FK>></color>
+    *<color:orange>rate : varchar(30) <<FK>></color>
+    --
+    <color:grey>UNIQUE CONSTRAINT normal_description (title, description)</color>
+}
+
+entity "<b>Тип услуг</b>" as service_types {
+    *<color:red>code : varchar(30) <<PK>></color>
+    *title : varchar(60) UNIQUE
+    *description : text NULL UNIQUE
+    --
+}
+
+entity "<b>Услуга заказа</b>" as order_services {
+    *<color:red>id : serial(1, 1) <<PK>></color>
+    *<color:orange>order : integer <<FK>></color>
+    *<color:orange>service: varchar(6) <<FK>></color>
+    *count : smallint
+    --
+    <color:grey>UNIQUE CONSTRAINT is_not_duplicate (order, service)</color>
+    <color:grey>CONSTRAINT is_have_product CHECK (smallint >= 1)</color>
+
+}
+
+news ||--o{ user
+
+user ||--|| student_profile
+user ||--|| teacher_profile
+user ||-o{ role
+
+teacher_profile ||..o{ gender
+student_profile ||..o{ gender
+student_profile_rates ||--o{ rate
+student_profile_rates ||--o{ student_profile
+teacher_profile_rates ||--o{ rate
+teacher_profile_rates ||--o{ teacher_profile
+
+wallet ||-right-o{ wallet_statuses
+user ||--|| wallet
+wallet_transaction ||--o{ wallet
+wallet_transaction ||--o{ transaction_type
+
+teacher_profile ||..o{ education_level
+
+lesson ||--o{ lesson_statuses
+lesson ||--o{ user
+
+
+service ||--o{ service_types
+service_choice_preferences ||--o{ service_choice
+service_choice_preferences ||--o{ service
+order_services ||--o{ service
+order_services ||--o{ order
+order ||-o{ user
+order ||--o{ order_statuses
+
+@enduml
+
+
+' Добавить сущности:
+'     * Платеж
+'     * Рассылка
+'     * Избранное
+'     * Отзыв
+'     * Тег

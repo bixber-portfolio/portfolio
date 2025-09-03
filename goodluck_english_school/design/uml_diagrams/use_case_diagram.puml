@@ -1,0 +1,166 @@
+@startuml usecase_diagram
+left to right direction
+title Диаграмма вариантов использования (верхнеуровневая):\nКрасные - обязательные прецеденты для полноценного использования системы;\nЗеленые - необязательные.
+
+
+skinparam actorStyle awesome
+skinparam shadowing true
+skinparam UsecaseStereotypeFontSize 20
+
+skinparam package {
+    FontSize 20
+    BackgroundColor LightYellow
+}
+
+skinparam rectangle {
+    FontSize 23
+    BackgroundColor LightGrey
+}
+
+skinparam title {
+    FontSize 40
+    FontSize<< Система >> 30
+    FontSize<< Подсистема >> 25
+}
+
+skinparam note {
+    FontSize 21
+    BackgroundColor PapayaWhip
+}
+
+skinparam usecase {
+    FontSize 28
+    StereotypeFontSize 18
+
+    FontColor White
+    StereotypeFontColor White
+    FontColor<< Необязательно >> Black
+    StereotypeFontColor<< Необязательно >> Black
+    FontColor<< Верхние необ. >> Black
+    StereotypeFontColor<< Верхние необ. >> Black
+
+    BackgroundColor OrangeRed
+    BorderColor OrangeRed
+
+    BackgroundColor<< Верхние >> Red
+    BorderColor<< Верхние >> DarkRed
+    BorderThickness<< Верхние >> 3
+    BackgroundColor<< Необязательно >> YellowGreen
+    BorderColor<< Необязательно >> YellowGreen
+    BackgroundColor<< Верхние необ.>> YellowGreen
+    BorderColor<< Верхние необ. >> DarkOliveGreen
+    BorderThickness<< Верхние необ. >> 3
+
+    ArrowColor DimGrey
+    ArrowFontSize 20
+    ArrowThickness 2
+}
+
+skinparam actor {
+    BorderColor DeepSkyBlue
+    BackgroundColor Blue
+    FontSize 30
+    FontStyle bold
+
+    StereotypeFontSize 20
+    StereotypeFontStyle italic 
+}
+
+rectangle "Внешние ресурсы обмена информацией" as OutsideResourses << Система >> {
+    usecase "Коммуникации" as communication << Верхние >>
+    usecase "Связь с преподавателем" as contact_teacher
+    usecase "Связь со студентом" as contact_student
+    usecase "Связь с администратором" as contact_admin
+    communication <|-right- contact_student
+    communication <|-right- contact_teacher
+    communication <|-left-- contact_admin
+}
+
+
+rectangle "Информационная система" as InfoSystem << Система >> {
+    usecase "Регистрация" as registration
+    usecase "Авторизация" as authorization
+
+    usecase "Просмотр \nдоступной информации" as show_available_info << Верхние необ. >>
+    usecase "Просмотр новостей" as show_news
+    usecase "Просмотр услуг" as show_services
+    usecase "Просмотр последних \nпреподавателей" as show_teachers
+    show_available_info .down.> show_news: include
+    show_available_info .down.> show_services: include
+    show_available_info .down.> show_teachers: include
+
+    usecase "Заполнение \nданных профиля" as fill_out_profile
+
+    usecase "Пополнение баланса" as replenish_balance << Верхние >>
+    usecase "Ввод суммы" as enter_amount
+    replenish_balance .down.> enter_amount: include
+
+    usecase "Приобретение услуги" as purchase_service << Верхние >>
+    usecase "Выбор услуги" as choose_service
+    usecase "Переход на \nстраницу оплаты" as open_payment_page
+
+    package "Административная панель" << Подсистема >> {
+        usecase "Изменение данных" as change_data << Верхние необ. >>
+        usecase "Данные пользователей" as user_data << Необязательно >>
+        usecase "Контент \nинформационной системы" as system_content << Необязательно >>
+        usecase "Конфигурация системы" as system_config << Необязательно >>
+        usecase "Переключение системы" as switch_system << Верхние необ. >>
+        usecase "Включение \nпрофилактического режима" as tech_break_on << Необязательно >>
+        usecase "Выключение \nпрофилактического режима" as tech_break_off << Необязательно >>
+    }
+    package "Платежный шлюз" as payment_gateway << Подсистема >> {
+        usecase "Ввод платежных \nреквизитов" as enter_payment_credentials
+        usecase "Подтверждение платежа" as approve_payment
+    }
+    enter_amount - open_payment_page: depend
+    choose_service - open_payment_page: depend
+    open_payment_page -- payment_gateway: depend
+    purchase_service .down.> choose_service: include
+    purchase_service .down.> open_payment_page: include
+    purchase_service .down.> enter_payment_credentials: include
+    purchase_service .down.> approve_payment: include
+    replenish_balance .down.> open_payment_page: include
+    replenish_balance .down.> enter_payment_credentials: include
+    replenish_balance .down.> approve_payment: include
+    
+    usecase "Подписка на \nрассылку писем" as subscribe_newsletters << Необязательно >>
+    usecase "Просмотр \nтекущих занятий" as show_current_lessons
+}
+
+actor "Пользователь" as User << Пользователь >>
+note top of User: Абстрактная \nмодель \nнаследования
+User -left-> registration
+User -left-> authorization
+User -left-> show_available_info
+User -left-> replenish_balance
+User -left-> purchase_service
+User -left-> subscribe_newsletters
+User -left-> show_current_lessons
+User -left-> fill_out_profile
+
+actor "Студент" as Student << Пользователь >>
+User <|--- Student: heritage
+Student -right-> contact_teacher
+
+actor "Администратор" as Admin << Пользователь >>
+User <|-- Admin: heritage
+
+actor "Преподаватель" as Teacher << Пользователь >>
+User <|-- Teacher: heritage
+Teacher -right-> contact_student
+Teacher -right-> contact_admin
+
+change_data .down.> user_data: include
+change_data .down.> system_content: include
+change_data .down.> system_config: include
+
+switch_system <|-- tech_break_off
+switch_system <|-- tech_break_on
+Admin --> change_data
+Admin --> switch_system
+note "Имеет доступ \nко всем видам связи" as note_1
+Admin . note_1
+note_1 --> communication
+
+
+@enduml

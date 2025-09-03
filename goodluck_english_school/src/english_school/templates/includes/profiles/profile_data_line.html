@@ -1,0 +1,17 @@
+{% load static %}
+
+<div class="col card-article d-flex flex-column rounded-3 bg-info bg-opacity-25 mx-2">
+  <div class="text-container px-2 py-1">
+    <p class="article-title">{{ title }}</p>
+    <p class="article-text">
+      {% if is_have_parameter %}
+        {% if is_have_parameter and data %}
+          <img src="{% static 'icons/general/yes.svg' %}" width="20" height="20">
+        {% else %}
+          <img src="{% static 'icons/general/not.svg' %}" width="20" height="20">
+        {% endif %}
+      {% else %}
+        {{ data|default:"Не указано" }}</p>
+      {% endif %}
+  </div>
+</div>

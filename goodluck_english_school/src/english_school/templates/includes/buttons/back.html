@@ -1,0 +1,7 @@
+<div class="mb-2 rounded-pill w-auto d-inline-block border border-1 border-{{ bootstrap_color_name }}" style="background-color:#f5feff">
+  <a href="{% if provided_url %}{% url provided_url %}{% else %}{{ request.META.HTTP_REFERER }}{% endif %}" class="text-decoration-none">
+    <small class="text text-{{ bootstrap_color_name }} text-button p-1 px-2 m-0 fw-medium">
+      <b>←</b> {{ text }}
+    </small>
+  </a>
+</div>

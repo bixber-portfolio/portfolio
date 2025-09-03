@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Услуги{% endblock title %}
+
+{% block content %}
+<div class="container">
+	{% include 'includes/cards/services_list.html' with card_title="Обычные" type="common" services=common_services %}
+  {% include 'includes/cards/services_list.html' with card_title="Абонементы" type="subscription" services=subscription_services %}
+</div>
+{% endblock content %}

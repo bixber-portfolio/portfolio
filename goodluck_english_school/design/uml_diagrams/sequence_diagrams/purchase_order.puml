@@ -1,0 +1,155 @@
+@startuml purchase_order
+title "Последовательность процесса оформления заказа"
+autonumber
+
+skinparam title {
+    FontSize 40
+}
+
+skinparam arrow {
+    FontSize 24
+    Thickness 3
+}
+
+skinparam actor {
+    FontSize 28
+    FontStyle bold
+    BackgroundColor Orange
+    BorderColor SaddleBrown
+    BorderThickness 2
+}
+
+skinparam participant {
+    FontSize 28
+    FontStyle bold
+    BackgroundColor SkyBlue
+    BorderColor Blue
+    BorderThickness 2
+}
+
+skinparam database {
+    FontSize 28
+    FontStyle bold
+    BackgroundColor SkyBlue
+    BorderColor Blue
+    BorderThickness 2
+}
+
+skinparam entity {
+    FontSize 28
+    FontStyle bold
+    BackgroundColor SkyBlue
+    BorderColor Blue
+    BorderThickness 2
+}
+skinparam collections {
+    FontSize 24
+    BackgroundColor SkyBlue
+    BorderColor CadetBlue
+    BorderThickness 2
+}
+
+skinparam note {
+    FontSize 20
+    FontColor Grey
+    BackgroundColor LightYellow
+    BorderColor SaddleBrown
+    BorderThickness 2
+}
+
+
+actor "Пользователь" as User
+box <size:35>Информационная система</size> #LightBlue
+
+participant "Страница\nкаталога услуг" as CatalogPage
+
+collections "[Тариф;\nПреподаватель;\nВремя]" as ChoiceCollection
+note over ChoiceCollection: Опции выбора услуги
+entity "Кнопка\nоформления" as CheckoutButton
+participant "Веб-приложение" as WebApp
+database "База данных" as DB
+participant "Страница\nоформления заказа" as CheckoutPage
+participant "Платежный шлюз" as PaymentGateway
+note over PaymentGateway: Асинхронный\nшлюз для\nодновременной\nобработки\nбольшого количества\nзаказвв
+participant "Сервис\nотправки\nэлектронных\nуведомлений" as EmailService
+end box
+
+
+User -> CatalogPage++: Зайти на страницу
+CatalogPage -> ChoiceCollection++: Выбрать желаемую услугу
+ChoiceCollection -> CheckoutButton++: Нажать на кнопку
+destroy ChoiceCollection
+CheckoutButton -> WebApp++: Отправить тригер
+destroy CheckoutButton
+WebApp -> WebApp: Валидация выбранных\nданных
+WebApp --> CatalogPage: Отправить запрос\nна переадресацию
+deactivate WebApp
+
+CatalogPage -> CheckoutPage++: Переадресовать\nпользователя
+deactivate CatalogPage
+CheckoutPage -> PaymentGateway++: Установить соединение
+PaymentGateway --// CheckoutPage: Вернуть ответ\nна страницу
+CheckoutPage --> User: Отобразить страницу
+note left: Поля для\nввода\nбанковских\nреквизитов
+
+User -> CheckoutPage: Ввести платежные\nреквизиты
+CheckoutPage -> PaymentGateway: Передать\nплатежные реквизиты
+
+alt Корректные данные
+note across: <font color=green>**Correct Data**</font>
+PaymentGateway -> PaymentGateway: Проверка данных\nна корректность
+PaymentGateway --> CheckoutPage: Вернуть поле\nдля кода подтверждения
+else Некорректные данные
+note across: <font color=red>**Incorrect Data**</font>
+PaymentGateway -> PaymentGateway: Проверка данных\nна корректность
+PaymentGateway --> CheckoutPage: Вернуть ошибку\nкорректности данных
+opt Попробовать ещё раз...
+CheckoutPage -> User: Выдать пустую форму заново
+note right: Возврат к шагу **№11**
+end
+end
+|||
+par
+PaymentGateway --> User: Отправить секретный\nкод подтверждения
+CheckoutPage --> User: Отобразить поле для ввода
+end
+|||
+User -> CheckoutPage: Ввести секретный\nкод подтверждения
+CheckoutPage -> PaymentGateway: Перенаправить\nсекретный код
+
+alt Правильный секретный код
+note across: <font color=green>**Успешная покупка**</font>
+PaymentGateway -> PaymentGateway: Сверка данных и\nсписание средств
+else Неправильный секретный код
+note across: <font color=red>**Неудачная покупка**</font>
+PaymentGateway -> PaymentGateway: Сверка данных и\nотмена оплаты
+opt Попробовать ещё раз...
+CheckoutPage -> User: Выдать пустую форму заново
+note right: Возврат к шагу **№20**
+end
+end
+
+par
+PaymentGateway --> CheckoutPage: Отобразить\nподтверждение\nуспешной оплаты
+PaymentGateway --> WebApp++: Отправить запрос
+deactivate PaymentGateway
+end
+|||
+WebApp -> DB++: Обновить некоторые данные
+deactivate DB
+WebApp -> EmailService++: Отправить запрос\nна отправку письма
+WebApp -> CheckoutPage: Передать факт\nуспешной оплаты
+par
+CheckoutPage --> User: Отобразить\nуспешную оплату
+deactivate CheckoutPage
+WebApp --> User: Пополнить\nвиртуальный счет
+note left: Зачисление\nсредств в\nразмере\nоплаты\nпользователя
+deactivate WebApp
+end
+
+... <size:25>**1-2 минуты спустя...**</size> ...
+EmailService -> User: Отправить письмо\nс фискальным чеком
+deactivate EmailService
+
+
+@enduml

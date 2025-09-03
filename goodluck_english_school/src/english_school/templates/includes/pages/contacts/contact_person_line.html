@@ -1,0 +1,12 @@
+{% load static %}
+
+<div class="card-article d-flex flex-row align-items-center rounded-3 bg-info bg-opacity-25 p-2 mt-2">
+  <div class="d-flex flex-column">
+    <img src={{ person_photo_path }} class="rounded-circle">
+  </div>
+  <div class="d-flex flex-column ms-3 w-100">
+    <p class="article-title text text-primary"><u>{{ person_role|upper }}</u></p>
+    <p class="text article-text m-0">{{ person_initials|title }}</p>
+    <p class="text article-text m-0"><strong>Email: </strong>{{ person_address }}</p>
+  </div>
+</div>

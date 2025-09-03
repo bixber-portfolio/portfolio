@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load static %}
+{% load django_bootstrap5 %}
+{% block title %}
+  Онлайн-школа английского языка 
+{% endblock title %}
+
+{% block content %}
+<div class="container-fluid" id="home-container-bg-top">
+	<div class="container">
+		<div class="row">
+			<div class="col py-sm-4 py-2">
+				{% include 'includes/texts/intro_text.html' with text="Эффективный английский от Goodluck" display_size="1" %}
+				<div class="text-content text-benefits-content">
+					<ul class="list list-benefits">
+						{% include 'includes/lists/unordered/benefit_item.html' with text="Спланируем конференцию с консультантом — квалифицированным преподавателем" %}
+						{% include 'includes/lists/unordered/benefit_item.html' with text="Найдем Ваши слабые и сильные стороны в английском языке" %}
+						{% include 'includes/lists/unordered/benefit_item.html' with text="Составим индивидуальный план обучения в нашей онлайн-школе" %}
+					</ul>
+				</div>
+			</div>
+			{% if request.user.is_anonymous %}
+				<div class="col ms-md-5 py-4 d-flex justify-content-center align-items-center">
+					<div class="infro-form-content bg-white p-4 rounded-4 ms-md-auto mt-auto mb-auto p-auto">
+						<div class="intro-form-icon d-flex justify-content-center" id="intro-form-top-icon">
+							<img src="{% static 'icons/form-icons/intro-form-top-icon.svg' %}" alt="">
+						</div>
+						{% include 'includes/forms/intro_form.html' with button_text="Записаться на консультацию" with_margin_top="4" %}
+				</div>
+			</div>
+		{% endif %}
+		</div>
+	</div>
+</div>
+<div class="container">
+	{% include 'includes/cards/top_service.html' with card_title="Часто выбирают студенты" frequent_choice_by="student" data=student_top_choice %}
+	{% include 'includes/cards/top_service.html' with card_title="Часто выбирают взрослые" frequent_choice_by="adult" data=adult_top_choice %}
+	{% include 'includes/cards/news_card_placeholder.html' with card_title="Последние новости" %}
+	</div>
+</div>
+{% if request.user.is_anonymous %}
+	<div class="container">
+		<div class="row m-0 px-4" id="home-container-bg-bottom">
+			<div class="col col-sm-5 pb-0 pt-4">
+				{% include 'includes/texts/intro_text.html' with text="Не знаете с чего начать?" display_size="2" %}
+				{% include 'includes/texts/intro_subtext.html' with text="Предлагаем записаться на первое пробное занятие для составления эффективного плана Вашего обучения!" %}
+				<img src="{% static 'icons/form-icons/outro-form-bottom-image.png' %}">
+			</div>
+			<div class="col col-sm-7 py-4 py-sm-4 pt-0 d-flex justify-content-md-center align-items-md-center">
+				<div class="infro-form-content p-4 pt-0 rounded-4">
+					{% include 'includes/forms/intro_form.html' with button_text="Записаться на пробное занятие" is_high="True" %}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endif %}
+{% endblock content %}

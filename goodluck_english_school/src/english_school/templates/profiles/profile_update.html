@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+
+{% block title %}Редактирование {% if is_edit_user %}пользователя{% else %}профиля{% endif %}{% endblock title %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-8 offset-2">
+      <div class="card">
+        <div class="card-header text-center fw-medium">
+          Изменение данных {% if is_edit_user %}пользователя{% else %}профиля{% endif %}
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            {% bootstrap_button content="Сменить пароль" button_type="link" href="/auth/password_change/" button_class="btn-primary mb-3"%}
+            {% bootstrap_button button_type="submit" content="Сохранить изменения" %}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

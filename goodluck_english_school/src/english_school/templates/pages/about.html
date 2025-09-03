@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  О нас
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row d-flex justify-content-center">
+    <div class="col-8">
+      <div class="card card-info" id="about-card">
+        <div class="card-header text text-center">
+          <h5 class="mb-0 card-title">О нас</h5>
+        </div>
+        <div class="card-body">
+          <p class="d-flex justify-content-center align-items-center">
+            <img class="text-center" src="{% static "images/logo.png" %}" width="100" height="100">
+          </p>
+          <p>
+            <strong>«Goodluck»</strong> - основанная в 2023 году онлайн-школа по обучению
+            преимущественно английскому языку в формате ONLINE, с индивидуальной 
+            методикой и квалифицированными преподавателями со многих известных стран мира. 
+          </p>
+          <p>
+            Школа специализируется не только на обучении <em>обычному</em>, <em>разговорному</em>, 
+            но и <em>бизнес-английскому</em> (деловому английскому) языку.
+          </p>
+          <p>
+            С нами Вы сможете научиться учить английский язык с удовольствием и 
+            дойдёте до желаемого уровня владения языком намного быстрее!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

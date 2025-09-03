@@ -1,0 +1,43 @@
+{% load static %}
+<nav class="navbar py-2 navbar-expand-lg">
+  <a class="navbar-brand" href="{% url 'homepage' %}">
+    <img src="{% static 'images/logo.svg' %}" width="160" height="36">
+  </a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+  data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+  aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="nav nav-pills my-2 my-lg-0 ms-auto d-flex justify-content-center">
+      {% include 'includes/header/nav_item.html' with view_name="news:news_list" item_title="Новости" %}
+      {% include 'includes/header/nav_item.html' with view_name="services:services_list" item_title="Услуги" %}
+      {% include 'includes/header/nav_item.html' with view_name="lessons:schedule_lesson" item_title="Занятия" %}
+      {% include 'includes/header/nav_item.html' with view_name="pages:contacts" item_title="Контакты" %}
+      {% include 'includes/header/nav_item.html' with view_name="pages:about" item_title="О проекте" %}
+    </ul>
+    <ul class="navbar-nav align-items-center ms-auto mb-2 mb-lg-0 mt-4 mt-lg-0">
+    {% if request.user.is_authenticated %}
+      <li class="nav-item">
+        <a class="btn border-0 me-lg-2 text-white mb-0 text-decoration-none d-flex flex-column align-items-center py-0"
+        href="{% url 'profiles:profile_detail' request.user.username %}">
+          <img src="{% static 'icons/nav/profile.svg' %}" width="28" height="28">
+          <small class="text small-text">Профиль</small>
+        </a>
+      </li>
+      <li class="nav-item mt-lg-0 mt-2">
+        <a href="{% url 'users:logout' %}" class="btn btn-danger">Выйти</a>
+      </li> 
+    {% else %}
+      <li class="nav-item">
+        <div class="btn-group" role="group">
+          <a href="{% url 'users:login' %}" class="btn btn-light">Войти</a>
+          <a href="{% url 'users:registration' %}" class="btn btn-warning">Зарегистрироваться</a>
+        </div>
+      </li>
+    {% endif %}
+    </ul>
+  </div>
+</nav>
+
+

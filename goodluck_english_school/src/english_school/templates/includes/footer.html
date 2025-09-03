@@ -1,0 +1,35 @@
+{% load static %}
+
+<div class="row gy-3">
+  <div class="col-12 col-sm-3 d-flex flex-column text-center text-sm-start">
+    <h5 class="title mb-4">Полезные ссылки:</h5>
+    <ul class="list-unstyled">
+      <li>
+        <p class="mb-2"><a href="{% url 'pages:student_rules' %}" class="text link-text text-decoration-none">Студентам</a></p>
+      </li>
+      <li>
+        <p class="mb-2"><a href="{% url 'pages:teacher_rules' %}" class="text link-text text-decoration-none">Преподавателям</a></p>
+      </li>
+      <li>
+        <p class="mb-0"><a href="{% url 'pages:privacy_policy' %}" class="text link-text text-decoration-none">Политика конфиденциальности</a></p>
+      </li>
+    </ul>
+  </div>
+  <div class="col-12 col-sm-3  offset-sm-6 offset-0 d-flex flex-column">
+    <h5 class="title mb-4 text text-center">Мы в социальных сетях:</h5>
+    <div class="d-flex justify-content-center">
+      <a href="https://vk.com/club218773090" class="d-flex mx-1">
+        <img src="{% static 'icons/social_sites/vk.svg' %}" width="40" height="40">
+      </a>
+      <a href="https://t.me/natalia_bolkh" class="d-flex mx-1">
+        <img src="{% static 'icons/social_sites/telegram.svg' %}" width="40" height="40">
+      </a>
+    </div>
+  </div>
+</div>
+<div class="row mt-4 mt-sm-0">
+  <div class="col-12 text text-white text-center">
+    2025 © Goodluck
+  </div>
+</div>
+

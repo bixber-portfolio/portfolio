@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %}Планирование занятия{% endblock title %}
+
+{% block content %}
+<div class="container">
+  {% if request.user.role == 'student' %}
+  <div class="row">
+    <div class="col">
+      <div class="bg-white rounded-4 p-4 pt-3">
+        <div class="form form-decor d-flex flex-column justify-content-center align-items-center">
+          <div class="text mb-3">
+            <h2 style="font-weight:600">Запись на занятие</h2>
+          </div>
+          <div class="icon form-icon">
+            <img src="{% static 'icons/form-icons/schedule-lesson-form-top-icon.png' %}" alt="" style="max-width:25rem;">
+          </div>
+        </div>
+        <div class="form lesson-form schedule-lesson-form mt-3">
+          <form method="post">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                  {{ error }}
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% for field in form %}
+              {% if field.name == 'consent' %}
+              <div class="mb-3">
+                {% include 'includes/form_fields/consent.html' %}
+              </div>
+              {% else %}
+                <div class="{% if is_high %}{% if not forloop.first %}pt-4{% endif %}{% endif %}">
+                  {% bootstrap_field field field_class="bg-light" %}
+                </div>
+              {% endif %}
+            {% endfor %}
+            <button class="btn btn-info rounded-3" type="submit"><p class="m-0" style="font-weight:600;font-size:1.2rem">Записаться</p></button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {% include 'includes/lessons/lessons_history.html' with card_title=lessons_history_card_title %}
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const rateSelect = document.querySelector('#id_rate');
+      const teacherSelect = document.querySelector('#id_teacher');
+  
+      rateSelect.addEventListener('change', function() {
+          const selectedRate = rateSelect.value;
+          
+          // Clear previous teacher options
+          teacherSelect.innerHTML = '';
+  
+          // Fetch teacher users based on the selected rate
+          fetch(`/lessons/get_teacher_users/?rate=${selectedRate}`)
+              .then(response => response.json())
+              .then(data => {
+                  data.forEach(teacherUser => {
+                      const option = document.createElement('option');
+                      option.text = teacherUser.user__first_name + " " + teacherUser.user__last_name;
+                      option.value = teacherUser.user__id;
+                      teacherSelect.add(option);
+                  });
+              });
+      });
+  });
+  </script>
+{% endblock scripts %}
+
